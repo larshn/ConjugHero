@@ -25,7 +25,15 @@
       "package": "com.conjughero.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static",
+      "name": "ConjugHero",
+      "shortName": "ConjugHero",
+      "description": "Bli en helt i fransk verbbøying! Lær franske verb på en morsom måte.",
+      "lang": "no",
+      "themeColor": "#3B82F6",
+      "backgroundColor": "#F8FAFC"
     },
     "extra": {
       "description": "Bli en helt i fransk verbboying!"

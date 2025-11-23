@@ -1,11 +1,22 @@
 [build]
-  command = "npx expo export --platform web"
+  command = "npx expo export --platform web && cp -r public/* dist/ && cp assets/icon-*.png dist/assets/"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# SPA routing - redirect all requests to index.html
+# Cache control for PWA assets
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# SPA routing - redirect all requests to index.html (except for static files)
 [[redirects]]
   from = "/*"
   to = "/index.html"
