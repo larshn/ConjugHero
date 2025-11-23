@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
   TouchableOpacity,
   Animated,
   Dimensions,
@@ -104,7 +105,11 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+      >
         {/* Main result */}
         <Animated.View
           style={[
@@ -198,7 +203,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
             <Text style={styles.homeButtonText}>Til hovedmenyen</Text>
           </TouchableOpacity>
         </Animated.View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -208,11 +213,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  content: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
     padding: spacing.md,
+    paddingBottom: spacing['2xl'],
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: '100%',
   },
   resultCard: {
     backgroundColor: colors.surface,
