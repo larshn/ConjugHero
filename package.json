@@ -7,8 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build": "expo export --platform web && cp -r public/* dist/ && mkdir -p dist/assets && cp assets/icon-*.png dist/assets/",
-    "deploy": "npm run build && netlify deploy --prod --dir=dist"
+    "build": "expo export --platform web && cp -r public/* dist/ && mkdir -p dist/assets && cp assets/icon-*.png dist/assets/ && node -e \"const fs=require('fs');const f='dist/sw.js';fs.writeFileSync(f,fs.readFileSync(f,'utf8').replace('__BUILD_VERSION__',Date.now()))\"",
+    "deploy": "npm run build && netlify deploy --prod --dir=dist --no-build"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
