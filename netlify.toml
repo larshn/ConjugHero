@@ -1,5 +1,5 @@
 [build]
-  command = "npx expo export --platform web && cp -r public/* dist/ && cp assets/icon-*.png dist/assets/"
+  command = "npx expo export --platform web && cp -r public/* dist/ && mkdir -p dist/assets && cp assets/icon-*.png dist/assets/"
   publish = "dist"
 
 [build.environment]
