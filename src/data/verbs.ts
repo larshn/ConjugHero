@@ -6,6 +6,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'parler',
     infinitive: 'parler',
     norwegianMeaning: 'å snakke',
+    norwegianForms: {
+      présent: 'snakker',
+      passé_composé: 'har snakket',
+      imparfait: 'snakket',
+      futur_simple: 'skal snakke',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -47,6 +53,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'manger',
     infinitive: 'manger',
     norwegianMeaning: 'å spise',
+    norwegianForms: {
+      présent: 'spiser',
+      passé_composé: 'har spist',
+      imparfait: 'spiste',
+      futur_simple: 'skal spise',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -88,6 +100,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'aimer',
     infinitive: 'aimer',
     norwegianMeaning: 'å like / å elske',
+    norwegianForms: {
+      présent: 'liker / elsker',
+      passé_composé: 'har likt / har elsket',
+      imparfait: 'likte / elsket',
+      futur_simple: 'skal like / skal elske',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -129,6 +147,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'regarder',
     infinitive: 'regarder',
     norwegianMeaning: 'å se på',
+    norwegianForms: {
+      présent: 'ser på',
+      passé_composé: 'har sett på',
+      imparfait: 'så på',
+      futur_simple: 'skal se på',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -170,6 +194,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'jouer',
     infinitive: 'jouer',
     norwegianMeaning: 'å spille / å leke',
+    norwegianForms: {
+      présent: 'spiller / leker',
+      passé_composé: 'har spilt / har lekt',
+      imparfait: 'spilte / lekte',
+      futur_simple: 'skal spille / skal leke',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -211,6 +241,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'travailler',
     infinitive: 'travailler',
     norwegianMeaning: 'å jobbe',
+    norwegianForms: {
+      présent: 'jobber',
+      passé_composé: 'har jobbet',
+      imparfait: 'jobbet',
+      futur_simple: 'skal jobbe',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -252,6 +288,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'ecouter',
     infinitive: 'écouter',
     norwegianMeaning: 'å lytte',
+    norwegianForms: {
+      présent: 'lytter',
+      passé_composé: 'har lyttet',
+      imparfait: 'lyttet',
+      futur_simple: 'skal lytte',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -293,6 +335,12 @@ export const ER_VERBS: FrenchVerb[] = [
     id: 'danser',
     infinitive: 'danser',
     norwegianMeaning: 'å danse',
+    norwegianForms: {
+      présent: 'danser',
+      passé_composé: 'har danset',
+      imparfait: 'danset',
+      futur_simple: 'skal danse',
+    },
     group: 'ER',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -338,6 +386,12 @@ export const IR_VERBS: FrenchVerb[] = [
     id: 'finir',
     infinitive: 'finir',
     norwegianMeaning: 'å fullføre',
+    norwegianForms: {
+      présent: 'fullfører',
+      passé_composé: 'har fullført',
+      imparfait: 'fullførte',
+      futur_simple: 'skal fullføre',
+    },
     group: 'IR',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -379,6 +433,12 @@ export const IR_VERBS: FrenchVerb[] = [
     id: 'choisir',
     infinitive: 'choisir',
     norwegianMeaning: 'å velge',
+    norwegianForms: {
+      présent: 'velger',
+      passé_composé: 'har valgt',
+      imparfait: 'valgte',
+      futur_simple: 'skal velge',
+    },
     group: 'IR',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -420,6 +480,12 @@ export const IR_VERBS: FrenchVerb[] = [
     id: 'reussir',
     infinitive: 'réussir',
     norwegianMeaning: 'å lykkes',
+    norwegianForms: {
+      présent: 'lykkes',
+      passé_composé: 'har lyktes',
+      imparfait: 'lyktes',
+      futur_simple: 'skal lykkes',
+    },
     group: 'IR',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -461,6 +527,12 @@ export const IR_VERBS: FrenchVerb[] = [
     id: 'grandir',
     infinitive: 'grandir',
     norwegianMeaning: 'å vokse',
+    norwegianForms: {
+      présent: 'vokser',
+      passé_composé: 'har vokst',
+      imparfait: 'vokste',
+      futur_simple: 'skal vokse',
+    },
     group: 'IR',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -502,6 +574,12 @@ export const IR_VERBS: FrenchVerb[] = [
     id: 'rougir',
     infinitive: 'rougir',
     norwegianMeaning: 'å rødme',
+    norwegianForms: {
+      présent: 'rødmer',
+      passé_composé: 'har rødmet',
+      imparfait: 'rødmet',
+      futur_simple: 'skal rødme',
+    },
     group: 'IR',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -543,6 +621,12 @@ export const IR_VERBS: FrenchVerb[] = [
     id: 'reflechir',
     infinitive: 'réfléchir',
     norwegianMeaning: 'å tenke / reflektere',
+    norwegianForms: {
+      présent: 'tenker / reflekterer',
+      passé_composé: 'har tenkt / har reflektert',
+      imparfait: 'tenkte / reflekterte',
+      futur_simple: 'skal tenke / skal reflektere',
+    },
     group: 'IR',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -588,6 +672,12 @@ export const RE_VERBS: FrenchVerb[] = [
     id: 'vendre',
     infinitive: 'vendre',
     norwegianMeaning: 'å selge',
+    norwegianForms: {
+      présent: 'selger',
+      passé_composé: 'har solgt',
+      imparfait: 'solgte',
+      futur_simple: 'skal selge',
+    },
     group: 'RE',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -629,6 +719,12 @@ export const RE_VERBS: FrenchVerb[] = [
     id: 'attendre',
     infinitive: 'attendre',
     norwegianMeaning: 'å vente',
+    norwegianForms: {
+      présent: 'venter',
+      passé_composé: 'har ventet',
+      imparfait: 'ventet',
+      futur_simple: 'skal vente',
+    },
     group: 'RE',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -670,6 +766,12 @@ export const RE_VERBS: FrenchVerb[] = [
     id: 'repondre',
     infinitive: 'répondre',
     norwegianMeaning: 'å svare',
+    norwegianForms: {
+      présent: 'svarer',
+      passé_composé: 'har svart',
+      imparfait: 'svarte',
+      futur_simple: 'skal svare',
+    },
     group: 'RE',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -711,6 +813,12 @@ export const RE_VERBS: FrenchVerb[] = [
     id: 'perdre',
     infinitive: 'perdre',
     norwegianMeaning: 'å miste / tape',
+    norwegianForms: {
+      présent: 'mister / taper',
+      passé_composé: 'har mistet / har tapt',
+      imparfait: 'mistet / tapte',
+      futur_simple: 'skal miste / skal tape',
+    },
     group: 'RE',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -752,6 +860,12 @@ export const RE_VERBS: FrenchVerb[] = [
     id: 'entendre',
     infinitive: 'entendre',
     norwegianMeaning: 'å høre',
+    norwegianForms: {
+      présent: 'hører',
+      passé_composé: 'har hørt',
+      imparfait: 'hørte',
+      futur_simple: 'skal høre',
+    },
     group: 'RE',
     auxiliaryVerb: 'avoir',
     conjugations: {
@@ -793,6 +907,12 @@ export const RE_VERBS: FrenchVerb[] = [
     id: 'descendre',
     infinitive: 'descendre',
     norwegianMeaning: 'å gå ned',
+    norwegianForms: {
+      présent: 'går ned',
+      passé_composé: 'har gått ned',
+      imparfait: 'gikk ned',
+      futur_simple: 'skal gå ned',
+    },
     group: 'RE',
     auxiliaryVerb: 'être',
     conjugations: {

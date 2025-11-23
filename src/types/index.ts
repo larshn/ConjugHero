@@ -20,11 +20,20 @@ export interface Conjugation {
   'ils/elles': string;
 }
 
+// Norske bøyningsformer for hver tid
+export interface NorwegianForms {
+  présent: string;        // "snakker"
+  passé_composé: string;  // "har snakket"
+  imparfait: string;      // "snakket"
+  futur_simple: string;   // "skal snakke"
+}
+
 // Et fransk verb med alle bøyninger
 export interface FrenchVerb {
   id: string;
   infinitive: string;
   norwegianMeaning: string;
+  norwegianForms: NorwegianForms; // Korrekte norske bøyninger
   group: VerbGroup;
   conjugations: {
     présent: Conjugation;

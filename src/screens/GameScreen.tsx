@@ -67,7 +67,7 @@ const FillInExercise: React.FC<{
     <View style={styles.exerciseContainer}>
       <View style={styles.verbInfo}>
         <Text style={styles.infinitive}>{exercise.verb.infinitive}</Text>
-        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb.norwegianMeaning, exercise.tense)})</Text>
+        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb, exercise.tense)})</Text>
       </View>
 
       <View style={styles.tenseInfo}>
@@ -124,7 +124,7 @@ const MultipleChoiceExercise: React.FC<{
     <View style={styles.exerciseContainer}>
       <View style={styles.verbInfo}>
         <Text style={styles.infinitive}>{exercise.verb.infinitive}</Text>
-        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb.norwegianMeaning, exercise.tense)})</Text>
+        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb, exercise.tense)})</Text>
       </View>
 
       <View style={styles.tenseInfo}>
@@ -225,7 +225,7 @@ const MatchExercise: React.FC<{
     <View style={styles.exerciseContainer}>
       <View style={styles.verbInfo}>
         <Text style={styles.infinitive}>{exercise.verb.infinitive}</Text>
-        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb.norwegianMeaning, exercise.tense)})</Text>
+        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb, exercise.tense)})</Text>
       </View>
 
       <Text style={styles.matchInstruction}>Koble pronomen med riktig bøyning:</Text>
@@ -296,22 +296,19 @@ const generateVerbExample = (exercise: Exercise): string => {
   const verb = exercise.verb;
   const tense = exercise.tense;
   const conjugation = verb.conjugations[tense]['je'];
-  const meaning = formatMeaningInTense(verb.norwegianMeaning, tense);
-
-  // Fjern "å " fra begynnelsen hvis det finnes for å få ren verbform
-  const cleanMeaning = meaning.replace(/^å\s+/, '');
+  const meaning = formatMeaningInTense(verb, tense);
 
   switch (tense) {
     case 'présent':
-      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+      return `Je ${conjugation}. = Jeg ${meaning}.`;
     case 'passé_composé':
-      return `J'ai ${conjugation.replace(/^ai /, '')}. = Jeg ${cleanMeaning}.`;
+      return `J'ai ${conjugation.replace(/^ai /, '')}. = Jeg ${meaning}.`;
     case 'imparfait':
-      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+      return `Je ${conjugation}. = Jeg ${meaning}.`;
     case 'futur_simple':
-      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+      return `Je ${conjugation}. = Jeg ${meaning}.`;
     default:
-      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+      return `Je ${conjugation}. = Jeg ${meaning}.`;
   }
 };
 
