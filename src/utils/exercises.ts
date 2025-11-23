@@ -28,9 +28,10 @@ const generateWrongAnswers = (
   const wrongAnswers: string[] = [];
   const allConjugations = Object.values(verb.conjugations[tense]);
 
-  // Først, legg til andre bøyninger fra samme verb
+  // Først, legg til andre bøyninger fra samme verb (unngå duplikater!)
   for (const conj of allConjugations) {
-    if (conj !== correctAnswer && wrongAnswers.length < count) {
+    // Sjekk at det ikke er riktig svar OG ikke allerede lagt til
+    if (conj !== correctAnswer && !wrongAnswers.includes(conj) && wrongAnswers.length < count) {
       wrongAnswers.push(conj);
     }
   }
