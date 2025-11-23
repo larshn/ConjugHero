@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
-import { VerbGroup, Level, UserProgress } from '../types';
+import { VerbGroup, Level, UserProgress, COMBINED_MODE_UNLOCK_LEVELS } from '../types';
 
 const { width } = Dimensions.get('window');
 
@@ -101,6 +101,68 @@ const LevelSelector: React.FC<{
             </Text>
           </TouchableOpacity>
         ))}
+      </View>
+    </View>
+  );
+};
+
+// Kombinert modus nivåvelger med låse-logikk
+const CombinedLevelSelector: React.FC<{
+  selectedLevel: Level | null;
+  onSelectLevel: (level: Level) => void;
+  currentUserLevel: number;
+}> = ({ selectedLevel, onSelectLevel, currentUserLevel }) => {
+  const levels: { level: Level; label: string; color: string; description: string; unlockLevel: number }[] = [
+    { level: 'lett', label: 'Lett', color: colors.levelEasy, description: 'Kun presens', unlockLevel: COMBINED_MODE_UNLOCK_LEVELS.lett },
+    { level: 'middels', label: 'Middels', color: colors.levelMedium, description: '+ Passé Composé', unlockLevel: COMBINED_MODE_UNLOCK_LEVELS.middels },
+    { level: 'vanskelig', label: 'Vanskelig', color: colors.levelHard, description: 'Alle tider', unlockLevel: COMBINED_MODE_UNLOCK_LEVELS.vanskelig },
+  ];
+
+  return (
+    <View style={styles.levelContainer}>
+      <Text style={styles.levelTitle}>Velg nivå:</Text>
+      <View style={styles.levelButtons}>
+        {levels.map(({ level, label, color, description, unlockLevel }) => {
+          const isLocked = currentUserLevel < unlockLevel;
+          return (
+            <TouchableOpacity
+              key={level}
+              style={[
+                styles.levelButton,
+                isLocked && styles.levelButtonLocked,
+                selectedLevel === level && !isLocked && { backgroundColor: color, borderColor: color },
+              ]}
+              onPress={() => !isLocked && onSelectLevel(level)}
+              activeOpacity={isLocked ? 1 : 0.8}
+            >
+              {isLocked ? (
+                <>
+                  <Text style={styles.lockIcon}>🔒</Text>
+                  <Text style={styles.lockText}>Nivå {unlockLevel}</Text>
+                </>
+              ) : (
+                <>
+                  <Text
+                    style={[
+                      styles.levelLabel,
+                      selectedLevel === level && styles.levelLabelSelected,
+                    ]}
+                  >
+                    {label}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.levelDescription,
+                      selectedLevel === level && styles.levelDescriptionSelected,
+                    ]}
+                  >
+                    {description}
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
@@ -234,6 +296,46 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               )}
             </View>
           ))}
+        </View>
+
+        {/* Kombinert modus */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Kombinert modus</Text>
+          <View>
+            <VerbGroupCard
+              group={'ALL' as VerbGroup}
+              title="Alle verb"
+              description="ER-, IR- og RE-verb blandet"
+              color={colors.primary}
+              emoji="🎯"
+              isSelected={selectedGroup === 'ALL'}
+              onPress={() => handleSelectGroup('ALL' as VerbGroup)}
+            />
+
+            {selectedGroup === 'ALL' && (
+              <View style={styles.inlineOptions}>
+                <CombinedLevelSelector
+                  selectedLevel={selectedLevel}
+                  onSelectLevel={setSelectedLevel}
+                  currentUserLevel={progress.currentLevel}
+                />
+
+                {/* Start Button */}
+                {selectedLevel && progress.currentLevel >= COMBINED_MODE_UNLOCK_LEVELS[selectedLevel] && (
+                  <TouchableOpacity
+                    style={[styles.startButton, { backgroundColor: colors.primary }]}
+                    onPress={handleStartGame}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.startButtonText}>Start øvelse!</Text>
+                    <Text style={styles.startButtonSubtext}>
+                      Alle verb • {selectedLevel}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -410,6 +512,20 @@ const styles = StyleSheet.create({
   levelDescriptionSelected: {
     color: colors.textOnPrimary,
     opacity: 0.9,
+  },
+  levelButtonLocked: {
+    backgroundColor: colors.surfaceAlt,
+    borderColor: colors.border,
+    opacity: 0.7,
+  },
+  lockIcon: {
+    fontSize: 20,
+    marginBottom: 2,
+  },
+  lockText: {
+    fontSize: typography.fontSizes.xs,
+    color: colors.textSecondary,
+    fontWeight: typography.fontWeights.medium,
   },
   startButton: {
     backgroundColor: colors.primary,

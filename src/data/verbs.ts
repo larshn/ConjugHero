@@ -956,7 +956,7 @@ export const RE_VERBS: FrenchVerb[] = [
 export const ALL_VERBS: FrenchVerb[] = [...ER_VERBS, ...IR_VERBS, ...RE_VERBS];
 
 // Hjelpefunksjon for å hente verb etter gruppe
-export const getVerbsByGroup = (group: 'ER' | 'IR' | 'RE'): FrenchVerb[] => {
+export const getVerbsByGroup = (group: 'ER' | 'IR' | 'RE' | 'ALL'): FrenchVerb[] => {
   switch (group) {
     case 'ER':
       return ER_VERBS;
@@ -964,6 +964,8 @@ export const getVerbsByGroup = (group: 'ER' | 'IR' | 'RE'): FrenchVerb[] => {
       return IR_VERBS;
     case 'RE':
       return RE_VERBS;
+    case 'ALL':
+      return ALL_VERBS;
     default:
       return [];
   }
@@ -988,6 +990,12 @@ export const VERB_GROUP_EXPLANATIONS = {
     description: 'RE-verb mister -re i infinitiv og legger til nye endelser. Merk at 3. person entall (il/elle) ikke har noen ending.',
     pattern: 'Fjern -re og legg til: -s, -s, (ingen), -ons, -ez, -ent',
     example: 'vendre → je vends, tu vends, il vend, nous vendons, vous vendez, ils vendent',
+  },
+  ALL: {
+    title: 'Alle verbgrupper',
+    description: 'Kombinert modus med ER-, IR- og RE-verb. Her må du kjenne igjen og bøye alle typer verb!',
+    pattern: 'Husk mønstrene for alle tre gruppene',
+    example: 'parler (ER), finir (IR), vendre (RE)',
   },
 };
 

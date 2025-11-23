@@ -1,5 +1,12 @@
 // Verbgrupper
-export type VerbGroup = 'ER' | 'IR' | 'RE';
+export type VerbGroup = 'ER' | 'IR' | 'RE' | 'ALL';
+
+// Opplåsingskrav for kombinert modus
+export const COMBINED_MODE_UNLOCK_LEVELS = {
+  lett: 3,
+  middels: 5,
+  vanskelig: 7,
+} as const;
 
 // Nivåer
 export type Level = 'lett' | 'middels' | 'vanskelig';
