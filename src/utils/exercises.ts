@@ -181,6 +181,52 @@ export const formatTenseNorwegian = (tense: Tense): string => {
   }
 };
 
+// Konverter norsk infinitiv til riktig tid
+export const formatMeaningInTense = (norwegianMeaning: string, tense: Tense): string => {
+  // Fjern "å " fra begynnelsen hvis det finnes
+  const baseVerb = norwegianMeaning.replace(/^å\s+/, '');
+
+  // Håndter sammensatte betydninger (f.eks. "å like / å elske")
+  const parts = baseVerb.split(/\s*\/\s*/);
+
+  const conjugatePart = (verb: string): string => {
+    // Fjern eventuelt "å " fra delene også
+    const cleanVerb = verb.replace(/^å\s+/, '').trim();
+
+    switch (tense) {
+      case 'présent':
+        // Legg til -r for presens (forenklet)
+        if (cleanVerb.endsWith('e')) {
+          return cleanVerb + 'r';
+        }
+        return cleanVerb + 'er';
+
+      case 'passé_composé':
+        // Perfektum: har + partisipp
+        if (cleanVerb.endsWith('e')) {
+          return 'har ' + cleanVerb + 't';
+        }
+        return 'har ' + cleanVerb + 'd';
+
+      case 'imparfait':
+        // Preteritum (pågående)
+        if (cleanVerb.endsWith('e')) {
+          return cleanVerb + 't';
+        }
+        return cleanVerb + 'de';
+
+      case 'futur_simple':
+        // Futurum: skal + infinitiv
+        return 'skal ' + cleanVerb;
+
+      default:
+        return cleanVerb;
+    }
+  };
+
+  return parts.map(conjugatePart).join(' / ');
+};
+
 // Norsk formatering av nivå
 export const formatLevelNorwegian = (level: Level): string => {
   switch (level) {

@@ -23,6 +23,7 @@ import {
   generateExerciseRound,
   calculatePoints,
   formatTenseNorwegian,
+  formatMeaningInTense,
   shuffleArray,
 } from '../utils/exercises';
 import { TENSE_EXPLANATIONS, VERB_GROUP_EXPLANATIONS } from '../data/verbs';
@@ -66,7 +67,7 @@ const FillInExercise: React.FC<{
     <View style={styles.exerciseContainer}>
       <View style={styles.verbInfo}>
         <Text style={styles.infinitive}>{exercise.verb.infinitive}</Text>
-        <Text style={styles.meaning}>({exercise.verb.norwegianMeaning})</Text>
+        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb.norwegianMeaning, exercise.tense)})</Text>
       </View>
 
       <View style={styles.tenseInfo}>
@@ -123,7 +124,7 @@ const MultipleChoiceExercise: React.FC<{
     <View style={styles.exerciseContainer}>
       <View style={styles.verbInfo}>
         <Text style={styles.infinitive}>{exercise.verb.infinitive}</Text>
-        <Text style={styles.meaning}>({exercise.verb.norwegianMeaning})</Text>
+        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb.norwegianMeaning, exercise.tense)})</Text>
       </View>
 
       <View style={styles.tenseInfo}>
@@ -224,7 +225,7 @@ const MatchExercise: React.FC<{
     <View style={styles.exerciseContainer}>
       <View style={styles.verbInfo}>
         <Text style={styles.infinitive}>{exercise.verb.infinitive}</Text>
-        <Text style={styles.meaning}>({exercise.verb.norwegianMeaning})</Text>
+        <Text style={styles.meaning}>({formatMeaningInTense(exercise.verb.norwegianMeaning, exercise.tense)})</Text>
       </View>
 
       <Text style={styles.matchInstruction}>Koble pronomen med riktig bøyning:</Text>
