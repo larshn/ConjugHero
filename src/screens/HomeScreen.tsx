@@ -172,7 +172,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>VerbVenture</Text>
+          <Text style={styles.logo}>ConjugHero</Text>
           <Text style={styles.subtitle}>Mestre franske verb!</Text>
         </View>
 

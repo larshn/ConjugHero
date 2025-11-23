@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-// Fargepalett for VerbVenture
+// Fargepalett for ConjugHero
 // Moderne, ungdommelig stil med franske farger som inspirasjon
 
 export const colors = {
