@@ -291,6 +291,30 @@ const MatchExercise: React.FC<{
   );
 };
 
+// Hjelpefunksjon for å generere eksempel med det faktiske verbet
+const generateVerbExample = (exercise: Exercise): string => {
+  const verb = exercise.verb;
+  const tense = exercise.tense;
+  const conjugation = verb.conjugations[tense]['je'];
+  const meaning = formatMeaningInTense(verb.norwegianMeaning, tense);
+
+  // Fjern "å " fra begynnelsen hvis det finnes for å få ren verbform
+  const cleanMeaning = meaning.replace(/^å\s+/, '');
+
+  switch (tense) {
+    case 'présent':
+      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+    case 'passé_composé':
+      return `J'ai ${conjugation.replace(/^ai /, '')}. = Jeg ${cleanMeaning}.`;
+    case 'imparfait':
+      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+    case 'futur_simple':
+      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+    default:
+      return `Je ${conjugation}. = Jeg ${cleanMeaning}.`;
+  }
+};
+
 export const GameScreen: React.FC<GameScreenProps> = ({
   group,
   level,
@@ -474,7 +498,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
                 {TENSE_EXPLANATIONS[currentExercise.tense].description}
               </Text>
               <Text style={styles.explanationExample}>
-                {TENSE_EXPLANATIONS[currentExercise.tense].example}
+                {generateVerbExample(currentExercise)}
               </Text>
 
               {/* Verbgruppe-mønster */}
