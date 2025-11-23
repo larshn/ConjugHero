@@ -27,8 +27,9 @@ const VerbGroupCard: React.FC<{
   description: string;
   color: string;
   emoji: string;
+  isSelected?: boolean;
   onPress: () => void;
-}> = ({ group, title, description, color, emoji, onPress }) => {
+}> = ({ group, title, description, color, emoji, isSelected, onPress }) => {
   const handlePress = async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPress();
@@ -36,7 +37,11 @@ const VerbGroupCard: React.FC<{
 
   return (
     <TouchableOpacity
-      style={[styles.groupCard, { borderLeftColor: color }]}
+      style={[
+        styles.groupCard,
+        { borderLeftColor: color },
+        isSelected && { backgroundColor: color + '10', borderLeftWidth: 6 },
+      ]}
       onPress={handlePress}
       activeOpacity={0.8}
     >
@@ -47,7 +52,9 @@ const VerbGroupCard: React.FC<{
         <Text style={styles.groupTitle}>{title}</Text>
         <Text style={styles.groupDescription}>{description}</Text>
       </View>
-      <Text style={[styles.groupArrow, { color }]}>→</Text>
+      <Text style={[styles.groupArrow, { color }]}>
+        {isSelected ? '▼' : '→'}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -191,39 +198,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Verb Groups */}
+        {/* Verb Groups with inline level selector */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Velg verbgruppe</Text>
           {verbGroups.map((item) => (
-            <VerbGroupCard
-              key={item.group}
-              {...item}
-              onPress={() => handleSelectGroup(item.group)}
-            />
+            <View key={item.group}>
+              <VerbGroupCard
+                {...item}
+                isSelected={selectedGroup === item.group}
+                onPress={() => handleSelectGroup(item.group)}
+              />
+
+              {/* Level selector appears right below selected group */}
+              {selectedGroup === item.group && (
+                <View style={styles.inlineOptions}>
+                  <LevelSelector
+                    selectedLevel={selectedLevel}
+                    onSelectLevel={setSelectedLevel}
+                  />
+
+                  {/* Start Button */}
+                  {selectedLevel && (
+                    <TouchableOpacity
+                      style={[styles.startButton, { backgroundColor: item.color }]}
+                      onPress={handleStartGame}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.startButtonText}>Start øvelse!</Text>
+                      <Text style={styles.startButtonSubtext}>
+                        {selectedGroup}-verb • {selectedLevel}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
+            </View>
           ))}
         </View>
-
-        {/* Level Selector - shown when group is selected */}
-        {selectedGroup && (
-          <LevelSelector
-            selectedLevel={selectedLevel}
-            onSelectLevel={setSelectedLevel}
-          />
-        )}
-
-        {/* Start Button */}
-        {selectedGroup && selectedLevel && (
-          <TouchableOpacity
-            style={styles.startButton}
-            onPress={handleStartGame}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.startButtonText}>Start øvelse!</Text>
-            <Text style={styles.startButtonSubtext}>
-              {selectedGroup}-verb • {selectedLevel}
-            </Text>
-          </TouchableOpacity>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -305,6 +316,15 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: spacing.lg,
+  },
+  inlineOptions: {
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    marginTop: -spacing.xs,
+    marginBottom: spacing.sm,
+    marginLeft: spacing.sm,
+    marginRight: spacing.sm,
   },
   sectionTitle: {
     fontSize: typography.fontSizes.xl,
