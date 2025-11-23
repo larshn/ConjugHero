@@ -27,7 +27,7 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
-      "output": "static",
+      "output": "single",
       "name": "ConjugHero",
       "shortName": "ConjugHero",
       "description": "Bli en helt i fransk verbbøying! Lær franske verb på en morsom måte.",
@@ -37,9 +37,6 @@
     },
     "extra": {
       "description": "Bli en helt i fransk verbboying!"
-    },
-    "plugins": [
-      "expo-router"
-    ]
+    }
   }
 }
