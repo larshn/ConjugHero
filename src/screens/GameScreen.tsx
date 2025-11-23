@@ -463,14 +463,27 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
           {showExplanation && (
             <View style={styles.explanationBox}>
+              {/* Tidsforklaring */}
               <Text style={styles.explanationTitle}>
-                {VERB_GROUP_EXPLANATIONS[currentExercise.verb.group].title}
+                {TENSE_EXPLANATIONS[currentExercise.tense].title}
+              </Text>
+              <Text style={styles.explanationSubtitle}>
+                ({TENSE_EXPLANATIONS[currentExercise.tense].norwegianEquivalent})
               </Text>
               <Text style={styles.explanationText}>
-                {VERB_GROUP_EXPLANATIONS[currentExercise.verb.group].pattern}
+                {TENSE_EXPLANATIONS[currentExercise.tense].description}
               </Text>
               <Text style={styles.explanationExample}>
-                Eks: {VERB_GROUP_EXPLANATIONS[currentExercise.verb.group].example}
+                {TENSE_EXPLANATIONS[currentExercise.tense].example}
+              </Text>
+
+              {/* Verbgruppe-mønster */}
+              <View style={styles.explanationDivider} />
+              <Text style={styles.explanationPatternTitle}>
+                {VERB_GROUP_EXPLANATIONS[currentExercise.verb.group].title}:
+              </Text>
+              <Text style={styles.explanationPattern}>
+                {VERB_GROUP_EXPLANATIONS[currentExercise.verb.group].pattern}
               </Text>
             </View>
           )}
@@ -789,6 +802,26 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSizes.sm,
     color: colors.textMuted,
     fontStyle: 'italic',
+  },
+  explanationSubtitle: {
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+  },
+  explanationDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: spacing.sm,
+  },
+  explanationPatternTitle: {
+    fontSize: typography.fontSizes.sm,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  explanationPattern: {
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
   },
   nextButton: {
     backgroundColor: colors.primary,
