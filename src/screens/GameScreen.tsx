@@ -178,9 +178,11 @@ const MatchExercise: React.FC<{
   feedback: 'correct' | 'wrong' | null;
 }> = ({ exercise, onAnswer, feedback }) => {
   const [selectedPronoun, setSelectedPronoun] = useState<Pronoun | null>(null);
-  const [matches, setMatches] = useState<Record<string, string>>({});
+  // Store both the answer text and its index to handle duplicate conjugations
+  const [matches, setMatches] = useState<Record<string, { answer: string; index: number }>>({});
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([]);
   const [matchResults, setMatchResults] = useState<Record<string, boolean>>({});
+  const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (exercise.matchPairs) {
@@ -189,16 +191,18 @@ const MatchExercise: React.FC<{
     setMatches({});
     setSelectedPronoun(null);
     setMatchResults({});
+    setUsedIndices(new Set());
   }, [exercise.id]);
 
   const handleSelectPronoun = (pronoun: Pronoun) => {
     setSelectedPronoun(pronoun);
   };
 
-  const handleSelectAnswer = (answer: string) => {
+  const handleSelectAnswer = (answer: string, index: number) => {
     if (selectedPronoun) {
-      const newMatches = { ...matches, [selectedPronoun]: answer };
+      const newMatches = { ...matches, [selectedPronoun]: { answer, index } };
       setMatches(newMatches);
+      setUsedIndices(new Set([...usedIndices, index]));
       setSelectedPronoun(null);
 
       // Check if all matched
@@ -208,7 +212,7 @@ const MatchExercise: React.FC<{
         let allCorrect = true;
 
         exercise.matchPairs?.forEach((pair) => {
-          const isCorrect = newMatches[pair.pronoun] === pair.answer;
+          const isCorrect = newMatches[pair.pronoun]?.answer === pair.answer;
           results[pair.pronoun] = isCorrect;
           if (!isCorrect) allCorrect = false;
         });
@@ -257,7 +261,7 @@ const MatchExercise: React.FC<{
                     showResult && isCorrect && styles.matchedAnswerCorrect,
                     showResult && !isCorrect && styles.matchedAnswerWrong,
                   ]}>
-                    → {matches[pronoun]} {showResult && (isCorrect ? '✓' : '✗')}
+                    → {matches[pronoun].answer} {showResult && (isCorrect ? '✓' : '✗')}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -267,7 +271,7 @@ const MatchExercise: React.FC<{
 
         <View style={styles.matchColumn}>
           {shuffledAnswers.map((answer, index) => {
-            const isUsed = Object.values(matches).includes(answer);
+            const isUsed = usedIndices.has(index);
             return (
               <TouchableOpacity
                 key={index}
@@ -276,7 +280,7 @@ const MatchExercise: React.FC<{
                   styles.matchItemAnswer,
                   isUsed && styles.matchItemUsed,
                 ]}
-                onPress={() => !isUsed && handleSelectAnswer(answer)}
+                onPress={() => !isUsed && handleSelectAnswer(answer, index)}
                 disabled={isUsed || !selectedPronoun || !!feedback}
               >
                 <Text style={[styles.matchItemText, isUsed && styles.matchItemTextUsed]}>
