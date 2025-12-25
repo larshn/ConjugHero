@@ -73,11 +73,23 @@ export interface UserProgress {
   stars: number;
   badges: Badge[];
   verbProgress: VerbProgress[];
+  spacedRepetition: SpacedRepetitionItem[];  // SR-data for alle verb+tense
   streakDays: number;
   lastPlayedDate: string;
   gamesPlayed: number;
   correctAnswers: number;
   totalAnswers: number;
+}
+
+// Spaced Repetition data per verb+tense kombinasjon
+export interface SpacedRepetitionItem {
+  verbId: string;
+  tense: Tense;
+  easeFactor: number;      // SM-2: starter på 2.5, justeres basert på svar
+  interval: number;        // Dager til neste repetisjon
+  nextReviewDate: string;  // ISO dato for neste øving
+  repetitions: number;     // Antall vellykkede repetisjoner på rad
+  lastQuality: number;     // Siste kvalitetsscore (0-5)
 }
 
 // Fremgang per verb
@@ -93,6 +105,20 @@ export interface VerbProgress {
     imparfait: number;
     futur_simple: number;
   };
+}
+
+// Beregnet styrke for et verb (for UI)
+export interface VerbStrength {
+  verbId: string;
+  overallStrength: number;  // 0-100
+  tenseStrengths: {
+    présent: number;
+    passé_composé: number;
+    imparfait: number;
+    futur_simple: number;
+  };
+  isDue: boolean;           // Trenger øving nå
+  nextReviewDate: string | null;
 }
 
 // Medaljer/Badges
@@ -123,6 +149,19 @@ export const BADGES: Omit<Badge, 'earnedDate'>[] = [
   { id: 'first_perfect', name: 'Perfekt Runde', description: 'Fullført en runde uten feil', icon: '✨', category: 'special' },
   { id: 'all_tenses', name: 'Tidsreisende', description: 'Øvd på alle verbaltider', icon: '⏰', category: 'special' },
 ];
+
+// Resultat fra en spillrunde
+export interface GameResults {
+  correctAnswers: number;
+  totalQuestions: number;
+  pointsEarned: number;
+  perfectRound: boolean;
+  exerciseResults?: {
+    verbId: string;
+    tense: Tense;
+    isCorrect: boolean;
+  }[];
+}
 
 // Spilltilstand
 export interface GameState {

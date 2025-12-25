@@ -8,7 +8,7 @@ import { ResultsScreen } from './src/screens/ResultsScreen';
 import { ProgressScreen } from './src/screens/ProgressScreen';
 import { BadgesScreen } from './src/screens/BadgesScreen';
 
-import { UserProgress, VerbGroup, Level, Badge } from './src/types';
+import { UserProgress, VerbGroup, Level, Badge, GameResults } from './src/types';
 import {
   loadProgress,
   saveProgress,
@@ -16,6 +16,7 @@ import {
   checkForNewBadges,
   calculateLevel,
   initialProgress,
+  updateSRAfterAnswer,
 } from './src/utils/storage';
 import { colors } from './src/utils/theme';
 
@@ -27,12 +28,6 @@ interface GameConfig {
   level: Level;
 }
 
-interface GameResults {
-  correctAnswers: number;
-  totalQuestions: number;
-  pointsEarned: number;
-  perfectRound: boolean;
-}
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -87,7 +82,7 @@ export default function App() {
       else if (accuracy >= 0.5) starsEarned = 1;
 
       // Update progress
-      const updatedProgress: UserProgress = {
+      let updatedProgress: UserProgress = {
         ...progress,
         totalPoints: progress.totalPoints + results.pointsEarned,
         stars: progress.stars + starsEarned,
@@ -95,6 +90,18 @@ export default function App() {
         correctAnswers: progress.correctAnswers + results.correctAnswers,
         totalAnswers: progress.totalAnswers + results.totalQuestions,
       };
+
+      // Update Spaced Repetition data for each exercise
+      if (results.exerciseResults) {
+        for (const result of results.exerciseResults) {
+          updatedProgress = updateSRAfterAnswer(
+            updatedProgress,
+            result.verbId,
+            result.tense,
+            result.isCorrect
+          );
+        }
+      }
 
       // Check for level up
       const oldLevel = progress.currentLevel;

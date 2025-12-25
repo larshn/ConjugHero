@@ -1,5 +1,6 @@
-import { Exercise, ExerciseType, FrenchVerb, Level, Pronoun, Tense, VerbGroup } from '../types';
+import { Exercise, ExerciseType, FrenchVerb, Level, Pronoun, Tense, VerbGroup, SpacedRepetitionItem } from '../types';
 import { getVerbsByGroup, ALL_VERBS } from '../data/verbs';
+import { generateSmartExerciseSelection } from './spacedRepetition';
 
 // Pronomen i rekkefølge
 const PRONOUNS: Pronoun[] = ['je', 'tu', 'il/elle', 'nous', 'vous', 'ils/elles'];
@@ -97,11 +98,12 @@ export const generateExercise = (
   return exercise;
 };
 
-// Generer en hel runde med oppgaver
+// Generer en hel runde med oppgaver (med valgfri SR-støtte)
 export const generateExerciseRound = (
   group: VerbGroup,
   level: Level,
-  exerciseCount: number = 10
+  exerciseCount: number = 10,
+  srItems?: SpacedRepetitionItem[]  // Valgfri: SR-data for smart utvalg
 ): Exercise[] => {
   const verbs = getVerbsByGroup(group);
   const tenses = getTensesForLevel(level);
@@ -112,10 +114,29 @@ export const generateExerciseRound = (
     ? ['fill_in', 'multiple_choice']
     : ['fill_in', 'multiple_choice', 'match'];
 
-  for (let i = 0; i < exerciseCount; i++) {
-    const verb = verbs[Math.floor(Math.random() * verbs.length)];
-    const tense = tenses[Math.floor(Math.random() * tenses.length)];
+  // Bruk SR-basert utvalg hvis data er tilgjengelig
+  let verbTenseSelection: { verb: FrenchVerb; tense: Tense }[];
 
+  if (srItems && srItems.length > 0) {
+    // Smart utvalg basert på spaced repetition
+    verbTenseSelection = generateSmartExerciseSelection(
+      verbs,
+      srItems,
+      tenses,
+      exerciseCount
+    );
+  } else {
+    // Tilfeldig utvalg (fallback)
+    verbTenseSelection = [];
+    for (let i = 0; i < exerciseCount; i++) {
+      verbTenseSelection.push({
+        verb: verbs[Math.floor(Math.random() * verbs.length)],
+        tense: tenses[Math.floor(Math.random() * tenses.length)],
+      });
+    }
+  }
+
+  verbTenseSelection.forEach((selection, i) => {
     // Varier oppgavetypen
     let type: ExerciseType;
     if (i % 5 === 4 && types.includes('match')) {
@@ -125,8 +146,8 @@ export const generateExerciseRound = (
       type = Math.random() > 0.5 ? 'fill_in' : 'multiple_choice';
     }
 
-    exercises.push(generateExercise(verb, tense, type));
-  }
+    exercises.push(generateExercise(selection.verb, selection.tense, type));
+  });
 
   return exercises;
 };

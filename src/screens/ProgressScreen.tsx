@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
-import { UserProgress, LEVEL_REQUIREMENTS } from '../types';
+import { UserProgress, LEVEL_REQUIREMENTS, VerbStrength } from '../types';
+import { calculateVerbStrength, isDue } from '../utils/spacedRepetition';
+import { ALL_VERBS } from '../data/verbs';
 
 interface ProgressScreenProps {
   progress: UserProgress;
@@ -21,6 +23,22 @@ export const ProgressScreen: React.FC<ProgressScreenProps> = ({
 }) => {
   const currentLevelReq = LEVEL_REQUIREMENTS[progress.currentLevel - 1] || LEVEL_REQUIREMENTS[0];
   const nextLevelReq = LEVEL_REQUIREMENTS[progress.currentLevel] || null;
+
+  // Beregn verbstyrke for alle verb
+  const verbStrengths = useMemo(() => {
+    return ALL_VERBS.map(verb =>
+      calculateVerbStrength(verb.id, progress.spacedRepetition)
+    ).sort((a, b) => {
+      // Verb som trenger øving først, deretter svakeste først
+      if (a.isDue && !b.isDue) return -1;
+      if (!a.isDue && b.isDue) return 1;
+      return a.overallStrength - b.overallStrength;
+    });
+  }, [progress.spacedRepetition]);
+
+  // Tell verb som trenger øving
+  const dueCount = verbStrengths.filter(v => v.isDue).length;
+  const weakCount = verbStrengths.filter(v => v.overallStrength < 50).length;
 
   const pointsToNextLevel = nextLevelReq
     ? nextLevelReq.pointsRequired - progress.totalPoints
@@ -181,6 +199,71 @@ export const ProgressScreen: React.FC<ProgressScreenProps> = ({
               ? 'God start! Kom tilbake i morgen!'
               : 'Start din streak i dag!'}
           </Text>
+        </View>
+
+        {/* Verb Strength Section */}
+        <View style={styles.verbStrengthSection}>
+          <Text style={styles.sectionTitle}>Verbstyrke</Text>
+          <View style={styles.verbSummary}>
+            {dueCount > 0 && (
+              <View style={styles.summaryBadge}>
+                <Text style={styles.summaryBadgeText}>
+                  {dueCount} trenger øving
+                </Text>
+              </View>
+            )}
+            {weakCount > 0 && (
+              <View style={[styles.summaryBadge, styles.summaryBadgeWeak]}>
+                <Text style={styles.summaryBadgeText}>
+                  {weakCount} svake verb
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {verbStrengths.slice(0, 10).map((strength) => {
+            const verb = ALL_VERBS.find(v => v.id === strength.verbId);
+            if (!verb) return null;
+
+            return (
+              <View key={strength.verbId} style={styles.verbRow}>
+                <View style={styles.verbInfo}>
+                  <Text style={styles.verbName}>{verb.infinitive}</Text>
+                  <Text style={styles.verbMeaning}>{verb.norwegianMeaning}</Text>
+                </View>
+                <View style={styles.strengthContainer}>
+                  {strength.isDue && (
+                    <Text style={styles.dueIndicator}>!</Text>
+                  )}
+                  <View style={styles.strengthBarContainer}>
+                    <View
+                      style={[
+                        styles.strengthBar,
+                        {
+                          width: `${strength.overallStrength}%`,
+                          backgroundColor:
+                            strength.overallStrength >= 70
+                              ? colors.success
+                              : strength.overallStrength >= 40
+                              ? colors.warning
+                              : colors.error,
+                        },
+                      ]}
+                    />
+                  </View>
+                  <Text style={styles.strengthPercent}>
+                    {Math.round(strength.overallStrength)}%
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+
+          {verbStrengths.length > 10 && (
+            <Text style={styles.moreVerbs}>
+              + {verbStrengths.length - 10} flere verb
+            </Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -359,5 +442,84 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSizes.base,
     color: colors.textSecondary,
     textAlign: 'center',
+  },
+  verbStrengthSection: {
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    marginTop: spacing.lg,
+    ...shadows.sm,
+  },
+  verbSummary: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  summaryBadge: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.full,
+  },
+  summaryBadgeWeak: {
+    backgroundColor: colors.warning,
+  },
+  summaryBadgeText: {
+    color: colors.textOnPrimary,
+    fontSize: typography.fontSizes.xs,
+    fontWeight: typography.fontWeights.medium,
+  },
+  verbRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  verbInfo: {
+    flex: 1,
+  },
+  verbName: {
+    fontSize: typography.fontSizes.base,
+    fontWeight: typography.fontWeights.medium,
+    color: colors.textPrimary,
+  },
+  verbMeaning: {
+    fontSize: typography.fontSizes.xs,
+    color: colors.textSecondary,
+  },
+  strengthContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  dueIndicator: {
+    color: colors.error,
+    fontWeight: typography.fontWeights.bold,
+    fontSize: typography.fontSizes.lg,
+  },
+  strengthBarContainer: {
+    width: 60,
+    height: 8,
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: borderRadius.full,
+    overflow: 'hidden',
+  },
+  strengthBar: {
+    height: '100%',
+    borderRadius: borderRadius.full,
+  },
+  strengthPercent: {
+    width: 36,
+    fontSize: typography.fontSizes.xs,
+    color: colors.textSecondary,
+    textAlign: 'right',
+  },
+  moreVerbs: {
+    textAlign: 'center',
+    color: colors.textSecondary,
+    fontSize: typography.fontSizes.sm,
+    marginTop: spacing.md,
   },
 });

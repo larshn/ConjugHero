@@ -17,7 +17,9 @@ import {
   VerbGroup,
   Level,
   Pronoun,
+  Tense,
   UserProgress,
+  GameResults,
 } from '../types';
 import {
   generateExerciseRound,
@@ -36,13 +38,6 @@ interface GameScreenProps {
   progress: UserProgress;
   onComplete: (results: GameResults) => void;
   onExit: () => void;
-}
-
-interface GameResults {
-  correctAnswers: number;
-  totalQuestions: number;
-  pointsEarned: number;
-  perfectRound: boolean;
 }
 
 // Fill-in exercise component
@@ -330,14 +325,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const [correctCount, setCorrectCount] = useState(0);
   const [totalPoints, setTotalPoints] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
+  // Track SR-relevant data for each exercise
+  const [exerciseResults, setExerciseResults] = useState<{
+    verbId: string;
+    tense: Tense;
+    isCorrect: boolean;
+  }[]>([]);
 
   // Animation
   const fadeAnim = useState(new Animated.Value(1))[0];
 
   useEffect(() => {
-    const generated = generateExerciseRound(group, level, 10);
+    // Bruk SR-data for smart verbvalg hvis tilgjengelig
+    const generated = generateExerciseRound(group, level, 10, progress.spacedRepetition);
     setExercises(generated);
-  }, [group, level]);
+  }, [group, level, progress.spacedRepetition]);
 
   const currentExercise = exercises[currentIndex];
 
@@ -353,6 +355,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         isCorrect = answer.toLowerCase() === currentExercise.correctAnswer.toLowerCase();
         setSelectedAnswer(answer);
       }
+
+      // Track for SR update
+      setExerciseResults(prev => [...prev, {
+        verbId: currentExercise.verb.id,
+        tense: currentExercise.tense,
+        isCorrect,
+      }]);
 
       if (isCorrect) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -397,6 +406,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         totalQuestions: exercises.length,
         pointsEarned: totalPoints,
         perfectRound: correctCount === exercises.length,
+        exerciseResults,  // For SR oppdatering
       });
     }
   };

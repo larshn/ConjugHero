@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 import { VerbGroup, Level, UserProgress, COMBINED_MODE_UNLOCK_LEVELS } from '../types';
+import { isDue } from '../utils/spacedRepetition';
 
 const { width } = Dimensions.get('window');
 
@@ -201,6 +202,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [selectedGroup, setSelectedGroup] = React.useState<VerbGroup | null>(null);
   const [selectedLevel, setSelectedLevel] = React.useState<Level | null>(null);
 
+  // Tell verb som trenger øving (SR-basert)
+  const dueVerbsCount = useMemo(() => {
+    return progress.spacedRepetition.filter(item => isDue(item)).length;
+  }, [progress.spacedRepetition]);
+
+  // Tell svake verb (under 50% styrke basert på lav easeFactor)
+  const weakVerbsCount = useMemo(() => {
+    return progress.spacedRepetition.filter(item => item.easeFactor < 2.0).length;
+  }, [progress.spacedRepetition]);
+
   const handleSelectGroup = (group: VerbGroup) => {
     setSelectedGroup(group);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -259,6 +270,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <Text style={styles.quickActionText}>Medaljer</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Smart Practice Section - shows when there are due/weak verbs */}
+        {(dueVerbsCount > 0 || weakVerbsCount > 0) && (
+          <View style={styles.smartPracticeSection}>
+            <TouchableOpacity
+              style={styles.smartPracticeButton}
+              onPress={() => onStartGame('ALL', 'middels')}
+              activeOpacity={0.8}
+            >
+              <View style={styles.smartPracticeIcon}>
+                <Text style={styles.smartPracticeEmoji}>🧠</Text>
+              </View>
+              <View style={styles.smartPracticeInfo}>
+                <Text style={styles.smartPracticeTitle}>Smart øving</Text>
+                <Text style={styles.smartPracticeSubtitle}>
+                  {dueVerbsCount > 0
+                    ? `${dueVerbsCount} verb trenger repetisjon`
+                    : `${weakVerbsCount} svake verb`}
+                </Text>
+              </View>
+              <Text style={styles.smartPracticeArrow}>→</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Verb Groups with inline level selector */}
         <View style={styles.section}>
@@ -415,6 +450,49 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSizes.sm,
     fontWeight: typography.fontWeights.medium,
     color: colors.textPrimary,
+  },
+  smartPracticeSection: {
+    marginBottom: spacing.lg,
+  },
+  smartPracticeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primaryLight,
+    borderRadius: borderRadius.xl,
+    padding: spacing.md,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    ...shadows.md,
+  },
+  smartPracticeIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  smartPracticeEmoji: {
+    fontSize: 24,
+  },
+  smartPracticeInfo: {
+    flex: 1,
+  },
+  smartPracticeTitle: {
+    fontSize: typography.fontSizes.lg,
+    fontWeight: typography.fontWeights.bold,
+    color: colors.primary,
+  },
+  smartPracticeSubtitle: {
+    fontSize: typography.fontSizes.sm,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  smartPracticeArrow: {
+    fontSize: typography.fontSizes['2xl'],
+    fontWeight: typography.fontWeights.bold,
+    color: colors.primary,
   },
   section: {
     marginBottom: spacing.lg,

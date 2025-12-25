@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserProgress, Badge, BADGES } from '../types';
+import { UserProgress, Badge, BADGES, SpacedRepetitionItem, Tense } from '../types';
+import { createSRItem, updateSRItem, getQualityFromAnswer } from './spacedRepetition';
 
 const STORAGE_KEY = '@verbventure_progress';
 
@@ -10,6 +11,7 @@ export const initialProgress: UserProgress = {
   stars: 0,
   badges: [],
   verbProgress: [],
+  spacedRepetition: [],
   streakDays: 0,
   lastPlayedDate: '',
   gamesPlayed: 0,
@@ -17,18 +19,57 @@ export const initialProgress: UserProgress = {
   totalAnswers: 0,
 };
 
-// Hent brukerens fremgang
+// Hent brukerens fremgang (med migrering for eldre data)
 export const loadProgress = async (): Promise<UserProgress> => {
   try {
     const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
     if (jsonValue !== null) {
-      return JSON.parse(jsonValue);
+      const parsed = JSON.parse(jsonValue);
+      // Migrering: legg til spacedRepetition hvis det mangler
+      if (!parsed.spacedRepetition) {
+        parsed.spacedRepetition = [];
+      }
+      return parsed;
     }
     return initialProgress;
   } catch (e) {
     console.error('Feil ved lasting av fremgang:', e);
     return initialProgress;
   }
+};
+
+// Oppdater SR-data etter et svar
+export const updateSRAfterAnswer = (
+  progress: UserProgress,
+  verbId: string,
+  tense: Tense,
+  isCorrect: boolean,
+  timeSpentMs?: number
+): UserProgress => {
+  const quality = getQualityFromAnswer(isCorrect, timeSpentMs);
+
+  // Finn eller opprett SR-element
+  let srItem = progress.spacedRepetition.find(
+    item => item.verbId === verbId && item.tense === tense
+  );
+
+  if (!srItem) {
+    srItem = createSRItem(verbId, tense);
+  }
+
+  // Oppdater med SM-2
+  const updatedItem = updateSRItem(srItem, quality);
+
+  // Oppdater listen
+  const newSRList = progress.spacedRepetition.filter(
+    item => !(item.verbId === verbId && item.tense === tense)
+  );
+  newSRList.push(updatedItem);
+
+  return {
+    ...progress,
+    spacedRepetition: newSRList,
+  };
 };
 
 // Lagre brukerens fremgang
